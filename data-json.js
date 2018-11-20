@@ -8,20 +8,29 @@ xhr.onload = function() {                       // When readystate changes
   console.log(response);
   console.log('response is type of', typeof response)
 
-    let jsonfile = '{ "name":"John", "age":30, "city":"New York"}'
-    var obj = JSON.parse(jsonfile);
-    console.log(obj)
+  // THIS WILL NOT WORK
 
-    var json = '{"result":true, "count":42}';
-    obj = JSON.parse(json);
-    console.log(obj.count);
+  // const planeobj = JSON.parse(response);
+  // console.log('plane output is ', planeobj);
 
-    const jsonplane = '{"Year": "2008","Month": "1","DayofMonth": "3","DayOfWeek": "4"}';
-    obj1 = JSON.parse(jsonplane);
-    console.log(obj1)
 
-    var eljsonPlane = document.getElementById('eljsonPlane')
-    eljsonPlane.innerHTML = obj1;
+
+
+    const jsonplane = '{"Year": "2018","Month": "99","DayofMonth": "77","DayOfWeek": "4"}';
+    const obj1 = JSON.parse(jsonplane);
+    console.log('obj1 is ', obj1)
+    console.log(typeof obj1)
+
+    // iterating through the object of 'obj1', this works.
+
+      for (let item in obj1) {
+
+          console.log(`The value is ${obj1[item]} of key  ${item}`);
+
+          var eljsonPlane = document.getElementById('eljsonPlane')
+          eljsonPlane.innerHTML = item;
+
+      }
 
     var elResponse = document.getElementById('divResponse')
     elResponse.innerHTML = response;
