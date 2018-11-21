@@ -8,16 +8,39 @@ xhr.onload = function() {                       // When readystate changes
   console.log(response);
   console.log('response is type of', typeof response)
 
-  // THIS WILL NOT WORK
-
-  // const planeobj = JSON.parse(response);
-  // console.log('plane output is ', planeobj);
 
 
+    const obj1 = {
+      "Year": "2008",
+      "Month": "1",
+      "DayofMonth": "3",
+      "DayOfWeek": "4",
+      "DepTime": "932",
+      "CRSDepTime": "930",
+      "ArrTime": "1152",
+      "CRSArrTime": "1145",
+      "UniqueCarrier": "WN",
+      "FlightNum": "2361",
+      "TailNum": "N348SW",
+      "ActualElapsedTime": "140",
+      "CRSElapsedTime": "135",
+      "AirTime": "124",
+      "ArrDelay": "7",
+      "DepDelay": "2",
+      "Origin": "MCO",
+      "Dest": "PIT",
+      "Distance": "834",
+      "TaxiIn": "7",
+      "TaxiOut": "9",
+      "Cancelled": "0",
+      "CancellationCode": null,
+      "Diverted": "0",
+      "CarrierDelay": "NA",
+      "WeatherDelay": "NA",
+      "NASDelay": "NA",
+      "SecurityDelay": "NA",
+      "LateAircraftDelay": "NA"};
 
-
-    const jsonplane = '{"Year": "2018","Month": "99","DayofMonth": "77","DayOfWeek": "4"}';
-    const obj1 = JSON.parse(jsonplane);
     console.log('obj1 is ', obj1)
     console.log(typeof obj1)
 
@@ -27,9 +50,18 @@ xhr.onload = function() {                       // When readystate changes
 
           console.log(`The value is ${obj1[item]} of key  ${item}`);
 
-          var eljsonPlane = document.getElementById('eljsonPlane')
-          eljsonPlane.innerHTML = item;
+          // var eljsonPlane = document.getElementById('eljsonPlane')
+          // eljsonPlane.innerHTML = item;
 
+          $('div').after('<ol id="notice">ol:id=notice</p>');
+          $('ol#notice').before('output:',  item,' ',obj1[item],', ');
+
+          if (obj1[item]==2361) {
+            console.log('FOUND! flightnum is 2361')
+            $("ol").css("color", "red");
+            $("ol").css("font-size", "30px");
+            $("ol").text("flight found!!!");
+          }
       }
 
     var elResponse = document.getElementById('divResponse')
