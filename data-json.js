@@ -1,149 +1,121 @@
 // start server
 
+
+
 var xhr = new XMLHttpRequest();                 // Create XMLHttpRequest object
 
 xhr.onload = function() {                       // When readystate changes
   if(xhr.status === 200) {
   const response = xhr.response;
-  console.log(response);
   console.log('response is type of', typeof response)
 
+  var obj = JSON.parse(response);
+  console.log('obj is typeof', typeof obj)
+  console.log('there is a length of', obj.length,' flights')
 
-      const obj2 = [{
-        "Year": "2008",
-        "Month": "1",
-        "DayofMonth": "3",
-        "DayOfWeek": "4",
-        "DepTime": "932",
-        "CRSDepTime": "930",
-        "ArrTime": "1152",
-        "CRSArrTime": "1145",
-        "UniqueCarrier": "WN",
-        "FlightNum": "1361",
-        "TailNum": "N348SW",
-        "ActualElapsedTime": "140",
-        "CRSElapsedTime": "135",
-        "AirTime": "124",
-        "ArrDelay": "7",
-        "DepDelay": "2",
-        "Origin": "MCO",
-        "Dest": "PIT",
-        "Distance": "834",
-        "TaxiIn": "7",
-        "TaxiOut": "9",
-        "Cancelled": "0",
-        "CancellationCode": null,
-        "Diverted": "0",
-        "CarrierDelay": "NA",
-        "WeatherDelay": "NA",
-        "NASDelay": "NA",
-        "SecurityDelay": "NA",
-        "LateAircraftDelay": "No"},{
-        "Year": "2018",
-        "Month": "2",
-        "DayofMonth": "3",
-        "DayOfWeek": "4",
-        "DepTime": "932",
-        "CRSDepTime": "930",
-        "ArrTime": "11152",
-        "CRSArrTime": "1145",
-        "UniqueCarrier": "WN",
-        "FlightNum": "361",
-        "TailNum": "N348SW",
-        "ActualElapsedTime": "140",
-        "CRSElapsedTime": "135",
-        "AirTime": "1214",
-        "ArrDelay": "7",
-        "DepDelay": "2",
-        "Origin": "MCO",
-        "Dest": "PIET",
-        "Distance": "834",
-        "TaxiIn": "7",
-        "TaxiOut": "9",
-        "Cancelled": "0",
-        "CancellationCode": null,
-        "Diverted": "0",
-        "CarrierDelay": "NA",
-        "WeatherDelay": "NA",
-        "NASDelay": "NA",
-        "SecurityDelay": "NA",
-        "LateAircraftDelay": "YES"},
-        {
-          "Year": "2038",
-          "Month": "3",
-          "DayofMonth": "3",
-          "DayOfWeek": "4",
-          "DepTime": "628",
-          "CRSDepTime": "620",
-          "ArrTime": "804",
-          "CRSArrTime": "750",
-          "UniqueCarrier": "WN",
-          "FlightNum": "2361",
-          "TailNum": "N428WN",
-          "ActualElapsedTime": "96",
-          "CRSElapsedTime": "90",
-          "AirTime": "76",
-          "ArrDelay": "14",
-          "DepDelay": "8",
-          "Origin": "IND",
-          "Dest": "BWI",
-          "Distance": "515",
-          "TaxiIn": "3",
-          "TaxiOut": "17",
-          "Cancelled": "0",
-          "CancellationCode": null,
-          "Diverted": "0",
-          "CarrierDelay": "NA",
-          "WeatherDelay": "NA",
-          "NASDelay": "NA",
-          "SecurityDelay": "NA",
-          "LateAircraftDelay": "NA"
+      var flightSpeedArray = [ ]
+      var flightNumArray = [ ]
+
+      Object.keys(obj).forEach(key => {
+          const flight = obj[key];
+
+      // function summaryofAllFlights goes through the flight object and shows the key value pairs for every object
+
+        function summaryofAllFlights() {
+          const summaryOutput = Object.entries(flight).forEach(([key, value]) => console.log(`${key}: ${value}`))
+
+          var $newListItem = $('<li></li>');
+          $('li:last').after($newListItem);
+
+          var msg = flight.TailNum;
+          var el = document.getElementById('demo');
+          el.innerHTML = msg;
+
+      // this js is to send the information to the browser
+
         }
-      ];
-
-    console.log('obj2 is ', obj2)
-    console.log(typeof obj2)
-
-    // iterating through the object of 'obj1', this works.
-
-      // for (let item in obj1) {
-      //     console.log(`For obj1 the value is ${obj1[item]} of key  ${item}`);
-      //     // var eljsonPlane = document.getElementById('eljsonPlane')
-      //     // eljsonPlane.innerHTML = item;
-      //
 
 
+      summaryofAllFlights();
 
 
-      Object.keys(obj2).forEach(key => {
+          // console.log(flight)
+          // console.log('the flight time is', flight.DepTime)
+          // console.log('the flight number is', flight.FlightNum)
+          // console.log('the flight destination is', flight.Dest)
+          // console.log('flight is', typeof flight)
 
-          console.log('the obj2[key]is', obj2[key]);
+          var fltspeedResult =  Math.round((flight.Distance / flight.ActualElapsedTime*60));
 
-          for (let item2 in obj2[key]) {
-              console.log(`Key is ${item2} and value is ${obj2[key][item2]}`);
+          function finddest(dest) {
+            if (flight.Dest===dest) {
+              console.log('!the flight destination is', flight.Dest)
+              flightSpeedArray.push(fltspeedResult);
+              flightNumArray.push(flight.FlightNum);
 
-
-              $('div').after('<ol id="notice">ol:id=notice</p>');
-              $('ol#notice').before('output: ',  item2, ':' ,obj2[key][item2],' , ');
-
-              if (obj2[key][item2]==2361) {
-                console.log('OBJ2 FOUND! flightnum is 2361')
-                $("ol").css("color", "red");
-                $("ol").css("font-size", "30px");
-                $("ol").text("flight found!!!");
-              }
-
+            } else {
+              console.log('')
+            }
           }
+
+        finddest('MCO')
 
 
 
       });
 
-    var elResponse = document.getElementById('divResponse')
-    elResponse.innerHTML = response;
+
+
+
+      let a = flightSpeedArray
+      let b = flightNumArray
+      let c = {};
+
+      for (let i=0; i<=a.length; i++) {
+          if (typeof c[a[i]] === 'undefined') {
+              c[a[i]] = b[i];
+
+          } else {
+              if (c[a[i]] instanceof Array === false) {
+                  c[a[i]] = [c[a[i]]];
+              }
+              c[a[i]].push(b[i]);
+          }
+
+          console.log('distance and flt number are: ',c);
+
+          // this goes into the flagged flights and lists the pairs
+
+          Object.entries(c).forEach(([key, value]) => console.log(`${key}: ${value}`))
+
+      }
+
+// end of for loop to look for a specific flight
+
+      for (var i = 0; i < 10; i++) {
+        obj[i]
+
+
+      }
+
+// to sort the array
+
+      const result = Object.entries(obj).sort((a, b) => a - b);
+      console.log('the result', result)
+
+// iterate throug the array
+
+      const map = new Map(Object.entries(obj));
+      console.log(map); // Map { foo: "bar", baz: 42 }
+
+
+
 
   }
 };
+
+
+
 
 
 
