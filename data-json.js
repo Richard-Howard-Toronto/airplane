@@ -21,22 +21,16 @@ xhr.onload = function() {                       // When readystate changes
 
       // function summaryofAllFlights goes through the flight object and shows the key value pairs for every object
 
-        function summaryofAllFlights() {
-          const summaryOutput = Object.entries(flight).forEach(([key, value]) => console.log(`${key}: ${value}`))
 
-          var $newListItem = $('<li></li>');
-          $('li:last').after($newListItem);
+        $('#myDiv').click(function(){
+              const summaryOutput = Object.entries(flight).forEach(([key, value]) => console.log(`${key}: ${value}`))
 
-          var msg = flight.TailNum;
-          var el = document.getElementById('demo');
-          el.innerHTML = msg;
-
-      // this js is to send the information to the browser
-
-        }
-
-
-      summaryofAllFlights();
+            // this returns the flight numbers
+              var $tailfin = flight.TailNum;
+              var $destination = flight.Dest;
+              var $newListItem = $('<li>' + $tailfin + '</li>');
+              $('ol:last').after($newListItem);
+          })
 
 
           // console.log(flight)
@@ -49,7 +43,7 @@ xhr.onload = function() {                       // When readystate changes
 
           function finddest(dest) {
             if (flight.Dest===dest) {
-              console.log('!the flight destination is', flight.Dest)
+              // console.log('!the flight destination is', flight.Dest)
               flightSpeedArray.push(fltspeedResult);
               flightNumArray.push(flight.FlightNum);
 
@@ -57,10 +51,6 @@ xhr.onload = function() {                       // When readystate changes
               console.log('')
             }
           }
-
-        finddest('MCO')
-
-
 
       });
 
@@ -90,26 +80,15 @@ xhr.onload = function() {                       // When readystate changes
 
       }
 
-// end of for loop to look for a specific flight
-
-      for (var i = 0; i < 10; i++) {
-        obj[i]
-
-
-      }
-
 // to sort the array
 
       const result = Object.entries(obj).sort((a, b) => a - b);
-      console.log('the result', result)
+      // console.log('the result', result)
 
-// iterate throug the array
+// iterate through the array
 
       const map = new Map(Object.entries(obj));
-      console.log(map); // Map { foo: "bar", baz: 42 }
-
-
-
+      console.log(map);
 
   }
 };
