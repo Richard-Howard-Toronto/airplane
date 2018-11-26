@@ -1,6 +1,20 @@
-// start server
+// don't forget to start server
 
+// this is code I copied to create the footer clock
 
+function updateClock() {
+    var currentTime = new Date ();
+    var currentHours = currentTime.getHours ( );
+    var currentMinutes = currentTime.getMinutes ( );
+    var currentSeconds = currentTime.getSeconds ( );
+    currentMinutes = ( currentMinutes < 10 ? "0" : "" ) + currentMinutes;
+    currentSeconds = ( currentSeconds < 10 ? "0" : "" ) + currentSeconds;
+    var timeOfDay = ( currentHours < 12 ) ? "AM" : "PM";
+    currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
+    currentHours = ( currentHours == 0 ) ? 12 : currentHours;
+    var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
+    document.getElementById("clock").firstChild.nodeValue = currentTimeString;
+}
 
 var xhr = new XMLHttpRequest();                 // Create XMLHttpRequest object
 
@@ -13,72 +27,22 @@ xhr.onload = function() {                       // When readystate changes
   console.log('obj is typeof', typeof obj)
   console.log('there is a length of', obj.length,' flights')
 
-      var flightSpeedArray = [ ]
-      var flightNumArray = [ ]
+  var flightSpeedArray = [ ]
+  var flightNumArray = [ ]
 
-      Object.keys(obj).forEach(key => {
-          const flight = obj[key];
+  Object.keys(obj).forEach(key => {
 
-      // function summaryofAllFlights goes through the flight object and shows the key value pairs for every object
+  const flight = obj[key];
 
-
-        $('#myDiv').click(function(){
-              const summaryOutput = Object.entries(flight).forEach(([key, value]) => console.log(`${key}: ${value}`))
-
+  $('#myDiv').click(function(){
+      const summaryOutput = Object.entries(flight).forEach(([key, value]) => console.log(`${key}: ${value}`))
             // this returns the flight numbers
-              var $tailfin = flight.TailNum;
-              var $destination = flight.Dest;
-              var $newListItem = $('<li>' + $tailfin + '</li>');
-              $('ol:last').after($newListItem);
-          })
-
-
-          // console.log(flight)
-          // console.log('the flight time is', flight.DepTime)
-          // console.log('the flight number is', flight.FlightNum)
-          // console.log('the flight destination is', flight.Dest)
-          // console.log('flight is', typeof flight)
-
-          var fltspeedResult =  Math.round((flight.Distance / flight.ActualElapsedTime*60));
-
-          function finddest(dest) {
-            if (flight.Dest===dest) {
-              // console.log('!the flight destination is', flight.Dest)
-              flightSpeedArray.push(fltspeedResult);
-              flightNumArray.push(flight.FlightNum);
-
-            } else {
-              console.log('')
-            }
-          }
-
-      });
-
-
-
-
-      let a = flightSpeedArray
-      let b = flightNumArray
-      let c = {};
-
-      for (let i=0; i<=a.length; i++) {
-          if (typeof c[a[i]] === 'undefined') {
-              c[a[i]] = b[i];
-
-          } else {
-              if (c[a[i]] instanceof Array === false) {
-                  c[a[i]] = [c[a[i]]];
-              }
-              c[a[i]].push(b[i]);
-          }
-
-          console.log('distance and flt number are: ',c);
-
-          // this goes into the flagged flights and lists the pairs
-
-          Object.entries(c).forEach(([key, value]) => console.log(`${key}: ${value}`))
-
-      }
+      var $tailfin = flight.TailNum;
+      var $destination = flight.Dest;
+      var $newListItem = $('<li>' + $tailfin + '</li>');
+      $('ol:last').after($newListItem);
+      })
+  });
 
 // to sort the array
 
@@ -88,13 +52,87 @@ xhr.onload = function() {                       // When readystate changes
 // iterate through the array
 
       const map = new Map(Object.entries(obj));
-      console.log(map);
+      console.log('map it!', map);
 
   }
-};
+
+  $('#myDivFlightsGoingTo').click(function(){
+    console.log('in #myDivFlightsGoingTo');
+
+    Object.keys(obj).forEach(key => {
+
+        const flight = obj[key];
+
+        const summaryOutput = Object.entries(flight).forEach(([key, value]) => (`${key}: ${value}`))
+
+
+          if (flight.Dest==="PIT") {
+            console.log('!!!!the flight destination is', flight.Dest);
+            console.log('flight Number is', flight.FlightNum);
+            console.log('flight leaves at: ', flight.DepTime)
+
+          // the jquery stuff
+
+            var $flightDest = flight.Dest;
+            var $flightNum = flight.FlightNum;
+
+          // this code adds a zero if the clock isn't four digits
+
+            flight.DepTime = ( flight.DepTime < 1000 ? "0" : "" ) + flight.DepTime;
+            var $flightdepartureTime = flight.DepTime;
+
+          // checks to see if the plane left.
+
+
+            if (flight.DepTime > 1200) {
+              var timeLeft = flight.DepTime - 1200;
+              flightMsg = `.  Note: Plane has not departed and you have ${timeLeft} minutes to catch it`;
+            } else {
+              flightMsg = '.  Note: Plane has departed.';
+            }
+
+          // writes the output to DOM
+
+            console.log('$flightnumber is', $flightdepartureTime)
+            var $newListItem1 = $('<li>' +'At: ' + $flightdepartureTime + ' HRs on Flight Number: ' + $flightNum + flightMsg + '</li>');
+            $('ul:last').after($newListItem1);
+            } else {
+            return
+            }
+
+      // advises if flight has already left.
 
 
 
+
+      // to find the quickest flight - A WORK IN PROGRESS
+
+            var fltspeedResult =  Math.round((flight.Distance / flight.ActualElapsedTime*60));
+
+              console.log(fltspeedResult)
+
+              flightSpeedArray.push(fltspeedResult);
+
+              console.log('the flightSpeedArray', flightSpeedArray)
+
+              function lowest(array) {
+                  let sortarray = (array.sort(function(a, b){return a-b}));
+                  console.log(sortarray);
+                  console.log(`index of array from 0 to ${sortarray.length-1}`);
+                  console.log(`desired index spot is therefore ${sortarray.length-1}`);
+                  console.log(`lowest number is ${sortarray[sortarray.length-(sortarray.length)]}.`);
+                }
+
+                lowest(flightSpeedArray)
+
+      }) // end of Object.keys
+
+  }); // end of function
+
+}; // end of xhr.onload = function()
+
+
+// these time and date functions are just useful.  I copied them from the web.
 
 
 

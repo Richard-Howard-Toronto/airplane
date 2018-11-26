@@ -1,4 +1,4 @@
-/* The Maker Bus Stylesheet */
+/* The Stylesheet from the JS book*/
 
 @import url(http://fonts.googleapis.com/css?family=Oswald:700,400);
 @import url(http://fonts.googleapis.com/css?family=Open+Sans);
@@ -8,6 +8,17 @@
   display: block;
 }
 
+button:hover {
+  color: green;
+  font-weight: bold;
+  background-color: lightblue;
+}
+
+button {
+  display: block;
+  padding: 10px;
+  margin: 10px;
+}
 
 body {
   background-color: #fff;
@@ -16,12 +27,29 @@ body {
   width: 960px;
   margin: 0 auto 0 auto;}
 
+main {
+  margin-left: 10px;
+}
+
+li {
+  margin-left: 50px;
+}
+
 header {
   display: block;
   height: 140px;
   border-bottom: 5px solid #000;
   margin-bottom: 30px;}
 
+footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: red;
+      color: white;
+      text-align: center;
+  }
 
 h2 {
   font-size: 2.4em;

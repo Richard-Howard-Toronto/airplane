@@ -29,3 +29,27 @@ for (let item in obj[key]) {
     }
 
 }
+
+
+let a = flightSpeedArray
+let b = flightNumArray
+let c = {};
+
+for (let i=0; i<=a.length; i++) {
+    if (typeof c[a[i]] === 'undefined') {
+        c[a[i]] = b[i];
+
+    } else {
+        if (c[a[i]] instanceof Array === false) {
+            c[a[i]] = [c[a[i]]];
+        }
+        c[a[i]].push(b[i]);
+    }
+
+    console.log('distance and flt number are: ',c);
+
+    // this goes into the flagged flights and lists the pairs
+
+    Object.entries(c).forEach(([key, value]) => console.log(`${key}: ${value}`))
+
+}
