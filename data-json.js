@@ -36,6 +36,7 @@ xhr.onload = function() {                       // When readystate changes
   $('#myDiv').click(function(){
       const summaryOutput = Object.entries(flight).forEach(([key, value]) => console.log(`${key}: ${value}`))
             // this returns the flight numbers
+
       var $tailfin = flight.TailNum;
       var $destination = flight.Dest;
       var $newListItem = $('<li>' + $tailfin + '</li>');
@@ -46,12 +47,10 @@ xhr.onload = function() {                       // When readystate changes
 // to sort the array
 
       const result = Object.entries(obj).sort((a, b) => a - b);
-      // console.log('the result', result)
 
-// iterate through the array
+// iterate through the array, just for fun...
 
       const map = new Map(Object.entries(obj));
-
 
   }
 
@@ -62,15 +61,20 @@ xhr.onload = function() {                       // When readystate changes
         const flight = obj[key];
         const summaryOutput = Object.entries(flight).forEach(([key, value]) => (`${key}: ${value}`))
 
+    //I should make this dynamic so you can pick a location.
+
           if (flight.Dest==="PIT") {
 
             var $flightDest = flight.Dest;
             var $flightNum = flight.FlightNum;
 
           // this code adds a zero if the clock isn't four digits
+
             let hours = 12
             flight.DepTime = ( flight.DepTime < hours ? "0" : "" ) + flight.DepTime;
             var $flightdepartureTime = flight.DepTime;
+
+          // see if the time is 3 digits or four, because you have to treat the hours and minutes separately, including making adjustments to the minutes for base 60.
 
             var sTest = flight.DepTime;
               var iCount = 0;
@@ -80,7 +84,8 @@ xhr.onload = function() {                       // When readystate changes
                   }
               }
 
-              console.log(iCount);
+          // if three digits, split the time like 934 into 9 and 34
+          // if four digits, split the time like 1822 into 18 and 22
 
             if (iCount==3) {
               var numDigits = 3;
@@ -90,7 +95,6 @@ xhr.onload = function() {                       // When readystate changes
               var result2 = str.match(/.{1}/g);
               var flighthours = result2[0]
               var flightminutes = result2.slice(Math.max(result2.length - 2, 0)).join('')
-
             } else {
               var numDigits = 2;
               var re = new RegExp("\\d{1," + numDigits + "}", "g");
@@ -103,7 +107,7 @@ xhr.onload = function() {                       // When readystate changes
             }
 
 
-/// to pass in the values
+      /// to pass in the values to your date object.  the issue is that the JSON file had the time as a string "845" or "1634" so you have to recreate the entire date object so you can substract it from the Date now object.
 
             year = flight.Year;
             month = flight.Month-1;
@@ -115,19 +119,56 @@ xhr.onload = function() {                       // When readystate changes
 
             flightime = new Date(year, month, day, hour, minute, second, millisecond)
 
+
+            // flight time CAREFUL ! flightime has only one t. bad spelling.
+
+            var flightObjectMonth = flightime.getMonth();
+            var flightObjectDay = flightime.getDay();
+            var flightObjectHours = flightime.getHours();
+            var flightObjectMinutes = flightime.getMinutes()
+
+            // time now
+
             var dateObjectNow = new Date();
+
+            var dateObjectNowMonth = dateObjectNow.getMonth();
+            var dateObjectNowDay = dateObjectNow.getDay();
+            var dateObjectNowHours = dateObjectNow.getHours();
+            var dateObjectNowMinutes = dateObjectNow.getMinutes()
+
+
             var dateObjectNowString = dateObjectNow.toString();
 
-            const diff = Math.round((Date.parse(flightime) - Date.parse(dateObjectNowString))/ (1000 * 60 * 60))
+        // here you find the difference between flight time and NOW in milliseconds, then convert to hours and minutes.
 
-            console.log('diff',diff)
+            const diff = (Date.parse(flightime) - Date.parse(dateObjectNowString))/ (1000 * 60 * 60)
 
-            if (diff > 0 ) {
-              msg = `   You have ${diff} hours to catch your flight.`
-            } else if (diff > 0 || diff < 24) {
-              msg = `  We are sorry, you missed your flight by ${-diff} hours.`
+
+            var diffHour = Math.trunc(flightObjectHours) - Math.trunc(dateObjectNowHours);
+            var diffMinute = flightObjectMinutes - dateObjectNowMinutes;
+
+            console.log('diffHour', diffHour)
+            console.log('diffMinute', diffMinute)
+
+            // but wait, if your flight was at 2:30 and the time is now 1:40, you can't say your flight leaves in one hour and minus ten minutes; you have to adjust.
+
+            // note that you have to check to see if diffHour > 0.  If not, then the flight left and you don't need to do the adjustment.
+
+            if (diffMinute < 0 && diffHour > 0) {
+              diffHour = diffHour - 1;
+              diffMinute = diffMinute + 60;
             } else {
-              msg = `  We are sorry, your flight left ${diff} days ago.`
+              // do nothing and keep going
+            }
+
+            //
+
+            if (diff > 0 && dateObjectNowDay == flightObjectDay ) {
+              msg = `   You have ${diffHour} hours and ${diffMinute} minutes to catch your flight.`
+            } else if (diffHour > 0 || diffHour < 24 && dateObjectNowDay == flightObjectDay  ) {
+              msg = `  We are sorry, you missed your flight by ${-diffHour} hours and ${diffMinute} minutes.`
+            } else {
+              msg = `  OH NO!  Your flight left ${Math.trunc(-diff/24)} days ago in month ${flightObjectMonth} and currently we are in month ${dateObjectNowMonth}.`
             }
 
           // writes the output to DOM
@@ -147,9 +188,9 @@ xhr.onload = function() {                       // When readystate changes
 
               function lowest(array) {
                   let sortarray = (array.sort(function(a, b){return a-b}));
-                  console.log(sortarray);
+                  // console.log(sortarray);
 
-                  console.log(`lowest number is ${sortarray[sortarray.length-(sortarray.length)]}.`);
+                  // console.log(`lowest number is ${sortarray[sortarray.length-(sortarray.length)]}.`);
 
                   var sortedArray = sortarray[sortarray.length-(sortarray.length)]
 
