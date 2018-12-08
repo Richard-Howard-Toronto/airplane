@@ -1,5 +1,7 @@
 // don't forget to start server
 
+
+
 // this is code I copied to create the footer clock
 
 function updateClock() {
@@ -21,11 +23,8 @@ var xhr = new XMLHttpRequest();                 // Create XMLHttpRequest object
 xhr.onload = function() {                       // When readystate changes
   if(xhr.status === 200) {
   const response = xhr.response;
-  console.log('response is type of', typeof response)
 
   var obj = JSON.parse(response);
-  console.log('obj is typeof', typeof obj)
-  console.log('there is a length of', obj.length,' flights')
 
   var flightSpeedArray = [ ]
   var flightNumArray = [ ]
@@ -52,7 +51,7 @@ xhr.onload = function() {                       // When readystate changes
 // iterate through the array
 
       const map = new Map(Object.entries(obj));
-      console.log('map it!', map);
+
 
   }
 
@@ -60,70 +59,110 @@ xhr.onload = function() {                       // When readystate changes
     console.log('in #myDivFlightsGoingTo');
 
     Object.keys(obj).forEach(key => {
-
         const flight = obj[key];
-
         const summaryOutput = Object.entries(flight).forEach(([key, value]) => (`${key}: ${value}`))
 
-
           if (flight.Dest==="PIT") {
-            console.log('!!!!the flight destination is', flight.Dest);
-            console.log('flight Number is', flight.FlightNum);
-            console.log('flight leaves at: ', flight.DepTime)
-
-          // the jquery stuff
 
             var $flightDest = flight.Dest;
             var $flightNum = flight.FlightNum;
 
           // this code adds a zero if the clock isn't four digits
-
-            flight.DepTime = ( flight.DepTime < 1000 ? "0" : "" ) + flight.DepTime;
+            let hours = 12
+            flight.DepTime = ( flight.DepTime < hours ? "0" : "" ) + flight.DepTime;
             var $flightdepartureTime = flight.DepTime;
 
-          // checks to see if the plane left.
+            var sTest = flight.DepTime;
+              var iCount = 0;
+              for (iIndex in sTest) {
+                  if (!isNaN(parseInt(sTest[iIndex]))) {
+                      iCount++;
+                  }
+              }
 
+              console.log(iCount);
 
-            if (flight.DepTime > 1200) {
-              var timeLeft = flight.DepTime - 1200;
-              flightMsg = `.  Note: Plane has not departed and you have ${timeLeft} minutes to catch it`;
+            if (iCount==3) {
+              var numDigits = 3;
+              var re = new RegExp("\\d{3," + numDigits + "}", "g");
+              var result = flight.DepTime.toString().match(re);
+              var str = flight.DepTime
+              var result2 = str.match(/.{1}/g);
+              var flighthours = result2[0]
+              var flightminutes = result2.slice(Math.max(result2.length - 2, 0)).join('')
+
             } else {
-              flightMsg = '.  Note: Plane has departed.';
+              var numDigits = 2;
+              var re = new RegExp("\\d{1," + numDigits + "}", "g");
+              var result = flight.DepTime.toString().match(re);
+              console.log('result with four #s',result)
+              var flighthours = result[0]
+              var flightminutes = result[1]
+              console.log('flighthours',flighthours)
+              console.log('flightminutes',flightminutes)
+            }
+
+
+/// to pass in the values
+
+            year = flight.Year;
+            month = flight.Month-1;
+            day = flight.DayofMonth;
+            hour = flighthours;
+            minute = flightminutes;
+            second = 0;
+            millisecond = 0;
+
+            flightime = new Date(year, month, day, hour, minute, second, millisecond)
+
+            var dateObjectNow = new Date();
+            var dateObjectNowString = dateObjectNow.toString();
+
+            const diff = Math.round((Date.parse(flightime) - Date.parse(dateObjectNowString))/ (1000 * 60 * 60))
+
+            console.log('diff',diff)
+
+            if (diff > 0 ) {
+              msg = `   You have ${diff} hours to catch your flight.`
+            } else if (diff > 0 || diff < 24) {
+              msg = `  We are sorry, you missed your flight by ${-diff} hours.`
+            } else {
+              msg = `  We are sorry, your flight left ${diff} days ago.`
             }
 
           // writes the output to DOM
 
-            console.log('$flightnumber is', $flightdepartureTime)
-            var $newListItem1 = $('<li>' +'At: ' + $flightdepartureTime + ' HRs on Flight Number: ' + $flightNum + flightMsg + '</li>');
+            var $newListItem1 = $('<li>' +' At: ' + $flightdepartureTime + ' HRs.  On Flight Number: ' + $flightNum + '.' + msg +'</li>');
             $('ul:last').after($newListItem1);
             } else {
             return
             }
-
-      // advises if flight has already left.
-
-
 
 
       // to find the quickest flight - A WORK IN PROGRESS
 
             var fltspeedResult =  Math.round((flight.Distance / flight.ActualElapsedTime*60));
 
-              console.log(fltspeedResult)
-
               flightSpeedArray.push(fltspeedResult);
-
-              console.log('the flightSpeedArray', flightSpeedArray)
 
               function lowest(array) {
                   let sortarray = (array.sort(function(a, b){return a-b}));
                   console.log(sortarray);
-                  console.log(`index of array from 0 to ${sortarray.length-1}`);
-                  console.log(`desired index spot is therefore ${sortarray.length-1}`);
+
                   console.log(`lowest number is ${sortarray[sortarray.length-(sortarray.length)]}.`);
+
+                  var sortedArray = sortarray[sortarray.length-(sortarray.length)]
+
+                  $('#findShortestFlight').click(function(){
+                      var $newListItem2 = $('<li>'+ 'Flight time in minutes is: ' + sortedArray + ' on flight ' + $flightNum + '</li>');
+                      $('ol').after($newListItem2);
+                  })
                 }
 
                 lowest(flightSpeedArray)
+
+
+
 
       }) // end of Object.keys
 
